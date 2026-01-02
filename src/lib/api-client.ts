@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:5001';
+// Use VITE_API_BASE_URL when provided, otherwise default to a same-origin path '/api'.
+// Using '/api' avoids mixed-content issues when the site is served over HTTPS —
+// the dev server proxies '/api' to your backend (see vite.config.ts) and in
+// production your web server should reverse-proxy '/api' to the backend.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+  ? import.meta.env.VITE_API_BASE_URL.trim()
+  : '/api';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
