@@ -1,92 +1,105 @@
-import { apiClient } from '@/lib/api-client';
+import { apiClient } from "@/lib/api-client";
 import type {
-  DrugSearchDto,
-  DrugDetailDto,
-  CreateDrugDto,
-  CreateReferenceDto,
-  InteractionCheckRequest,
-  InteractionCheckResponse,
-  InteractionDetailDto,
-  CreateInteractionDto,
-  DiseaseDto,
-  DiseaseTreatmentDto,
-  CreateDiseaseDto,
-  CreateDiseaseProtocolDto,
-} from '@/types/api';
+	DrugSearchDto,
+	DrugDetailDto,
+	CreateDrugDto,
+	CreateReferenceDto,
+	InteractionCheckRequest,
+	InteractionCheckResponse,
+	InteractionDetailDto,
+	CreateInteractionDto,
+	DiseaseDto,
+	DiseaseTreatmentDto,
+	CreateDiseaseDto,
+	CreateDiseaseProtocolDto,
+} from "@/types/api";
 
 // Drug API
 export const drugApi = {
-  search: async (term: string): Promise<DrugSearchDto[]> => {
-    const response = await apiClient.get(`/api/drugs`, {
-      params: { search: term },
-    });
-    return response.data;
-  },
+	search: async (term: string): Promise<DrugSearchDto[]> => {
+		const response = await apiClient.get(`/drugs`, {
+			params: { search: term },
+		});
+		return response.data;
+	},
 
-  getById: async (id: number): Promise<DrugDetailDto> => {
-    const response = await apiClient.get(`/api/drugs/${id}`);
-    return response.data;
-  },
+	getById: async (id: number): Promise<DrugDetailDto> => {
+		const response = await apiClient.get(`/drugs/${id}`);
+		return response.data;
+	},
 
-  create: async (drug: CreateDrugDto): Promise<DrugDetailDto> => {
-    const response = await apiClient.post('/api/drugs', drug);
-    return response.data;
-  },
+	create: async (drug: CreateDrugDto): Promise<DrugDetailDto> => {
+		const response = await apiClient.post("/drugs", drug);
+		return response.data;
+	},
 
-  update: async (id: number, drug: CreateDrugDto): Promise<DrugDetailDto> => {
-    const response = await apiClient.put(`/api/drugs/${id}`, drug);
-    return response.data;
-  },
+	update: async (id: number, drug: CreateDrugDto): Promise<DrugDetailDto> => {
+		const response = await apiClient.put(`/drugs/${id}`, drug);
+		return response.data;
+	},
 
-  delete: async (id: number): Promise<void> => {
-    await apiClient.delete(`/api/drugs/${id}`);
-  },
+	delete: async (id: number): Promise<void> => {
+		await apiClient.delete(`/drugs/${id}`);
+	},
 
-  addReference: async (drugId: number, reference: CreateReferenceDto): Promise<void> => {
-    await apiClient.post(`/api/drugs/${drugId}/references`, reference);
-  },
+	addReference: async (
+		drugId: number,
+		reference: CreateReferenceDto
+	): Promise<void> => {
+		await apiClient.post(`/drugs/${drugId}/references`, reference);
+	},
 };
 
 // Interaction API
 export const interactionApi = {
-  check: async (request: InteractionCheckRequest): Promise<InteractionCheckResponse> => {
-    const response = await apiClient.post('/api/interactions/check', request);
-    return response.data;
-  },
+	check: async (
+		request: InteractionCheckRequest
+	): Promise<InteractionCheckResponse> => {
+		const response = await apiClient.post("/interactions/check", request);
+		return response.data;
+	},
 
-  getById: async (id: number): Promise<InteractionDetailDto> => {
-    const response = await apiClient.get(`/api/interactions/${id}`);
-    return response.data;
-  },
+	getById: async (id: number): Promise<InteractionDetailDto> => {
+		const response = await apiClient.get(`/interactions/${id}`);
+		return response.data;
+	},
 
-  create: async (interaction: CreateInteractionDto): Promise<InteractionDetailDto> => {
-    const response = await apiClient.post('/api/interactions', interaction);
-    return response.data;
-  },
+	create: async (
+		interaction: CreateInteractionDto
+	): Promise<InteractionDetailDto> => {
+		const response = await apiClient.post("/interactions", interaction);
+		return response.data;
+	},
 
-  addReference: async (interactionId: number, reference: CreateReferenceDto): Promise<void> => {
-    await apiClient.post(`/api/interactions/${interactionId}/references`, reference);
-  },
+	addReference: async (
+		interactionId: number,
+		reference: CreateReferenceDto
+	): Promise<void> => {
+		await apiClient.post(
+			`/interactions/${interactionId}/references`,
+			reference
+		);
+	},
 };
 
 // Disease API
 export const diseaseApi = {
-  getAll: async (): Promise<DiseaseDto[]> => {
-    const response = await apiClient.get('/api/diseases');
-    return response.data;
-  },
+	getAll: async (): Promise<DiseaseDto[]> => {
+		const response = await apiClient.get("/diseases");
+		return response.data;
+	},
 
-  getTreatment: async (id: number): Promise<DiseaseTreatmentDto> => {
-    const response = await apiClient.get(`/api/diseases/${id}/treatment`);
-    return response.data;
-  },
+	getTreatment: async (id: number): Promise<DiseaseTreatmentDto> => {
+		const response = await apiClient.get(`/diseases/${id}/treatment`);
+		return response.data;
+	},
 
-  create: async (disease: CreateDiseaseDto): Promise<DiseaseDto> => {
-    const response = await apiClient.post('/api/diseases', disease);
-    return response.data;
-  },
+	create: async (disease: CreateDiseaseDto): Promise<DiseaseDto> => {
+		const response = await apiClient.post("/diseases", disease);
+		return response.data;
+	},
 
-  addProtocol: async (protocol: CreateDiseaseProtocolDto): Promise<void> => {
-    await apiClient.post('/api/diseases/protocols', protocol);
-  },
+	addProtocol: async (protocol: CreateDiseaseProtocolDto): Promise<void> => {
+		await apiClient.post("/diseases/protocols", protocol);
+	},
 };

@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
 					target: proxyTarget,
 					changeOrigin: true,
 					secure: false,
-					rewrite: (path) => path.replace(/^\/api/, ""),
+					// Preserve the /api prefix so the backend receives requests at /api/*
 				},
 			},
 		},
