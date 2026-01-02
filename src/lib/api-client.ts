@@ -5,17 +5,13 @@ import axios from "axios";
 // using it directly will cause mixed-content errors. In that case we fallback
 // to '/api' (same-origin) and log a warning so the developer can update the env
 // or enable TLS on the backend.
-const rawEnv = import.meta.env.VITE_API_BASE_URL
-	? import.meta.env.VITE_API_BASE_URL.trim()
-	: "";
+// const rawEnv = import.meta.env.VITE_API_BASE_URL
+// 	? import.meta.env.VITE_API_BASE_URL.trim()
+// 	: "";
 
 function getApiBaseUrl() {
 	// Force same-origin proxy for now (applies to all environments).
 	// This ensures the browser never makes http:// calls directly (avoids mixed-content).
-	// eslint-disable-next-line no-console
-	console.info(
-		"Forcing '/api' base URL to use same-origin proxy (forced by developer)."
-	);
 	return "/api";
 }
 
