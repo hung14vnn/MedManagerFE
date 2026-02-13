@@ -1,17 +1,32 @@
 import axios from "axios";
 
-// Use VITE_API_BASE_URL when provided, otherwise default to a same-origin path '/api'.
-// If VITE_API_BASE_URL is an http:// URL while the page is loaded over https://,
-// using it directly will cause mixed-content errors. In that case we fallback
-// to '/api' (same-origin) and log a warning so the developer can update the env
-// or enable TLS on the backend.
-// const rawEnv = import.meta.env.VITE_API_BASE_URL
-// 	? import.meta.env.VITE_API_BASE_URL.trim()
-// 	: "";
-
 function getApiBaseUrl() {
-	// Force same-origin proxy for now (applies to all environments).
-	// This ensures the browser never makes http:// calls directly (avoids mixed-content).
+	const rawEnv = import.meta.env.VITE_API_BASE_URL
+		? String(import.meta.env.VITE_API_BASE_URL).trim()
+		: "";
+
+	if (rawEnv) {
+		try {
+			const parsed = new URL(rawEnv);
+			if (
+				typeof window !== "undefined" &&
+				window.location.protocol === "https:" &&
+				parsed.protocol === "http:"
+			) {
+				console.warn(
+					"VITE_API_BASE_URL uses http while page is https. Falling back to /api to avoid mixed-content."
+				);
+				return "/api";
+			}
+			return rawEnv;
+		} catch (e) {
+			// Not a full URL — ignore and fall back
+			console.warn(
+				"VITE_API_BASE_URL is not a valid URL, falling back to /api" + e
+			);
+		}
+	}
+
 	return "/api";
 }
 
@@ -23,6 +38,28 @@ export const apiClient = axios.create({
 	},
 });
 
+// Request interceptor to add JWT token to all requests
+apiClient.interceptors.request.use(
+	(config) => {
+		// Get token from localStorage
+		const authStorage = localStorage.getItem("medmanager_auth");
+		if (authStorage) {
+			try {
+				const authData = JSON.parse(authStorage);
+				if (authData.token) {
+					config.headers.Authorization = `Bearer ${authData.token}`;
+				}
+			} catch (error) {
+				console.error("Error parsing auth token:", error);
+			}
+		}
+		return config;
+	},
+	(error) => {
+		return Promise.reject(error);
+	}
+);
+
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
 	(response) => response,
@@ -30,6 +67,19 @@ apiClient.interceptors.response.use(
 		if (error.response) {
 			// Server responded with error
 			console.error("API Error:", error.response.data);
+
+			// Handle 401 Unauthorized - token expired or invalid
+			if (error.response.status === 401) {
+				// Clear auth data and redirect to login
+				localStorage.removeItem("medmanager_auth");
+				// Only redirect if not already on an auth page
+				if (
+					!window.location.pathname.startsWith("/login") &&
+					!window.location.pathname.startsWith("/register")
+				) {
+					window.location.href = "/login";
+				}
+			}
 		} else if (error.request) {
 			// Request made but no response
 			console.error("Network Error:", error.message);

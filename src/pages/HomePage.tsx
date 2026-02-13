@@ -1,8 +1,7 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Activity, FileText, Info } from 'lucide-react';
+import { Search, Activity, FileText } from 'lucide-react';
+import { StatCard } from '@/components/home/StatCard';
+import { ImportantInfo } from '@/components/home/ImportantInfo';
 
 export function HomePage() {
     const containerVariants = {
@@ -24,15 +23,15 @@ export function HomePage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4 md:py-8">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-8 text-center"
+                className="mb-6 md:mb-8 text-center"
             >
-                <h1 className="mb-2 text-4xl font-bold">Chào mừng đến với Hệ thống Quản lý Y tế</h1>
-                <p className="text-lg text-muted-foreground">
-                    Hệ thống tra cứu thông tin thuốc và kiểm tra tương tác toàn diện
+                <h1 className="mb-2 text-2xl md:text-4xl font-bold text-green-900">TracuuDuoclamsang.vn</h1>
+                <p className="text-sm md:text-lg text-muted-foreground px-2">
+                    Nền tảng cung cấp thông tin dược lâm sàng phục vụ thực hành điều trị và hỗ trợ quyết định sử dụng thuốc an toàn, hiệu quả
                 </p>
             </motion.div>
 
@@ -40,72 +39,39 @@ export function HomePage() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+                className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
             >
                 <motion.div variants={itemVariants} whileHover={{ y: -5 }}>
-                    <Card className="transition-shadow hover:shadow-lg">
-                        <CardHeader>
-                            <motion.div
-                                whileHover={{ scale: 1.1, rotate: 5 }}
-                                className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600"
-                            >
-                                <Search className="h-6 w-6" />
-                            </motion.div>
-                            <CardTitle>Tra cứu thuốc</CardTitle>
-                            <CardDescription>
-                                Tìm kiếm thông tin chi tiết về thuốc theo hoạt chất, tên thương mại hoặc nhóm dược lý
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link to="/drug-search">
-                                <Button className="w-full cursor-pointer">Tra cứu ngay</Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
+                    <StatCard
+                        icon={<Search className="h-5 w-5 md:h-6 md:w-6" />}
+                        title="Thời gian hoạt động"
+                        value="123"
+                        label="Ngày từ khi ra mắt"
+                        description=""
+                        color="blue"
+                    />
                 </motion.div>
 
                 <motion.div variants={itemVariants} whileHover={{ y: -5 }}>
-                    <Card className="transition-shadow hover:shadow-lg">
-                        <CardHeader>
-                            <motion.div
-                                whileHover={{ scale: 1.1, rotate: 5 }}
-                                className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100 text-orange-600"
-                            >
-                                <Activity className="h-6 w-6" />
-                            </motion.div>
-                            <CardTitle>Kiểm tra tương tác</CardTitle>
-                            <CardDescription>
-                                Kiểm tra tương tác giữa các loại thuốc và nhận thông tin chi tiết về mức độ nghiêm trọng
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link to="/interaction-checker">
-                                <Button className="w-full cursor-pointer">Kiểm tra tương tác</Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
+                    <StatCard
+                        icon={<Activity className="h-5 w-5 md:h-6 md:w-6" />}
+                        title="Số lượt tìm kiếm"
+                        value="10,000 +"
+                        label="Lượt tra cứu từ khi ra mắt"
+                        description=""
+                        color="orange"
+                    />
                 </motion.div>
 
                 <motion.div variants={itemVariants} whileHover={{ y: -5 }}>
-                    <Card className="transition-shadow hover:shadow-lg">
-                        <CardHeader>
-                            <motion.div
-                                whileHover={{ scale: 1.1, rotate: 5 }}
-                                className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-600"
-                            >
-                                <FileText className="h-6 w-6" />
-                            </motion.div>
-                            <CardTitle>Phác đồ điều trị</CardTitle>
-                            <CardDescription>
-                                Xem phác đồ điều trị dựa trên bằng chứng khoa học cho các bệnh lý khác nhau
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link to="/disease-treatment">
-                                <Button className="w-full cursor-pointer">Xem phác đồ</Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
+                    <StatCard
+                        icon={<FileText className="h-5 w-5 md:h-6 md:w-6" />}
+                        title="Hoạt động gần đây"
+                        value="1,000 +"
+                        label="Lượt tra cứu trong 3 ngày gần nhất"
+                        description=""
+                        color="green"
+                    />
                 </motion.div>
             </motion.div>
 
@@ -114,28 +80,7 @@ export function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
             >
-                <Card className="mt-8 border-blue-200 bg-blue-50">
-                    <CardHeader>
-                        <div className="flex items-center gap-2">
-                            <Info className="h-5 w-5 text-blue-600" />
-                            <CardTitle className="text-blue-900">Thông tin quan trọng</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="text-sm text-blue-800">
-                        <ul className="list-disc space-y-1 pl-5">
-                            <li>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            </li>
-                            <li>
-                                Sed molestie libero sit amet orci rhoncus, sed vulputate sapien vulputate
-                            </li>
-                            <li>Curabitur vulputate risus non bibendum eleifend</li>
-                            <li>
-                                Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas
-                            </li>
-                        </ul>
-                    </CardContent>
-                </Card>
+                <ImportantInfo />
             </motion.div>
         </div>
     );

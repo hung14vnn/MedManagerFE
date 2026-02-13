@@ -1,0 +1,7 @@
+name = "med-manager-api-proxy"
+account_id = "f79f1b3a3579e7fa6d26e8c109e596cc"
+compatibility_date = "2026-01-05"
+main = "workers/api-proxy.js"
+
+# Optional: specify routes in the Cloudflare dashboard or add "routes = [\"example.com/api/*\"]" here
+# routes = ["yourdomain.com/api/*"]

@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Home, Search, FileText, Shield, Activity } from 'lucide-react';
+import { UserAvatar } from './UserAvatar';
 
 interface NavbarProps {
   isAdmin?: boolean;
@@ -43,7 +44,7 @@ export function Navbar({ isAdmin = false }: NavbarProps) {
               <Activity className="h-6 w-6" />
             </motion.div>
             <span className="text-xl font-bold">
-              TL Pharma {isAdmin && <span className="text-sm text-muted-foreground">Admin</span>}
+              TCDLS {isAdmin && <span className="text-sm text-muted-foreground">Admin</span>}
             </span>
           </Link>
 
@@ -75,28 +76,9 @@ export function Navbar({ isAdmin = false }: NavbarProps) {
             })}
           </div>
 
-          <motion.div
-            className="flex items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            {isAdmin ? (
-              <Link
-                to="/"
-                className="rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
-              >
-                User mode
-              </Link>
-            ) : (
-              <Link
-                to="/admin"
-                className="rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
-              >
-                Admin mode
-              </Link>
-            )}
-          </motion.div>
+          <div className="flex items-center gap-2">
+            <UserAvatar />
+          </div>
         </div>
       </div>
     </motion.nav>

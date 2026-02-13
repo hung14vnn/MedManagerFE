@@ -24,7 +24,7 @@ export function DiseaseTreatmentPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
@@ -114,8 +114,8 @@ export function DiseaseTreatmentPage() {
                 <CardContent>
                   <div className="space-y-4">
                     {treatment.preferredDrugs.map((item, index) => (
-                      <motion.div 
-                        key={index} 
+                      <motion.div
+                        key={index}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
@@ -124,14 +124,9 @@ export function DiseaseTreatmentPage() {
                         <div className="mb-2 flex items-start justify-between">
                           <div>
                             <h3 className="font-semibold text-green-900">
-                              {item.drug.activeIngredient}
+                              {item.drug.name}
                             </h3>
-                            <p className="text-sm text-green-700">{item.drug.brandName}</p>
-                            {item.drug.pharmacologicalGroup && (
-                              <Badge variant="outline" className="mt-1 border-green-300">
-                                {item.drug.pharmacologicalGroup}
-                              </Badge>
-                            )}
+                            <p className="text-sm text-green-700">Mã: {item.drug.code}</p>
                           </div>
                           <Badge className="bg-green-600">Ưu tiên</Badge>
                         </div>
@@ -183,8 +178,8 @@ export function DiseaseTreatmentPage() {
                 <CardContent>
                   <div className="space-y-4">
                     {treatment.alternativeDrugs.map((item, index) => (
-                      <motion.div 
-                        key={index} 
+                      <motion.div
+                        key={index}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
@@ -193,14 +188,9 @@ export function DiseaseTreatmentPage() {
                         <div className="mb-2 flex items-start justify-between">
                           <div>
                             <h3 className="font-semibold text-blue-900">
-                              {item.drug.activeIngredient}
+                              {item.drug.name}
                             </h3>
-                            <p className="text-sm text-blue-700">{item.drug.brandName}</p>
-                            {item.drug.pharmacologicalGroup && (
-                              <Badge variant="outline" className="mt-1 border-blue-300">
-                                {item.drug.pharmacologicalGroup}
-                              </Badge>
-                            )}
+                            <p className="text-sm text-blue-700">Mã: {item.drug.code}</p>
                           </div>
                           <Badge variant="outline" className="border-blue-600 text-blue-700">
                             Thay thế

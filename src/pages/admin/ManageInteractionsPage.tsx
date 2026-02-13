@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { interactionApi } from '@/lib/api';
 import type { CreateInteractionDto, DrugSearchDto } from '@/types/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,10 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { DrugSearchInput } from '@/components/DrugSearchInput';
 import { SeverityBadge } from '@/components/SeverityBadge';
-import { Plus, Loader2, CheckCircle, X } from 'lucide-react';
+import { Plus, Loader2, X, Search } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function ManageInteractionsPage() {
   const [drug1, setDrug1] = useState<DrugSearchDto | null>(null);
@@ -33,7 +34,11 @@ export function ManageInteractionsPage() {
       setMechanism('');
       setClinicalEffects('');
       setManagementRecommendations('');
+      toast.success('Tạo tương tác thuốc thành công');
     },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Tạo tương tác thuốc thất bại');
+    }
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,10 +60,15 @@ export function ManageInteractionsPage() {
   const canSubmit = drug1 && drug2 && mechanism && clinicalEffects && managementRecommendations;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="container mx-auto px-4 py-8"
+    >
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold">Manage Drug Interactions</h1>
-        <p className="text-muted-foreground">Create and manage drug-drug interaction data</p>
+        <h1 className="mb-2 text-3xl font-bold">Quản lý Tương tác thuốc</h1>
+        <p className="text-muted-foreground">Tạo và quản lý dữ liệu tương tác giữa các loại thuốc</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -66,63 +76,73 @@ export function ManageInteractionsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                Add New Interaction
+                <Plus className="h-5 w-5 text-primary" />
+                Thêm tương tác mới
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <Label>Drug 1 *</Label>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-base">Thuốc thứ nhất *</Label>
                     {drug1 ? (
-                      <div className="mt-2 flex items-center justify-between rounded-lg border p-3">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="mt-2 flex items-center justify-between rounded-lg border-2 border-primary/20 bg-primary/5 p-4 shadow-sm"
+                      >
                         <div>
-                          <p className="font-medium">{drug1.activeIngredient}</p>
-                          <p className="text-sm text-muted-foreground">{drug1.brandName}</p>
+                          <p className="font-bold text-primary">{drug1.name}</p>
+                          <p className="text-sm text-muted-foreground font-mono">Mã: {drug1.code}</p>
                         </div>
                         <Button
                           type="button"
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           onClick={() => setDrug1(null)}
+                          className="hover:bg-red-100 hover:text-red-500"
                         >
                           <X className="h-4 w-4" />
                         </Button>
-                      </div>
+                      </motion.div>
                     ) : (
                       <div className="mt-2">
                         <DrugSearchInput
                           onSelect={setDrug1}
-                          placeholder="Search for first drug..."
+                          placeholder="Tìm kiếm thuốc thứ nhất..."
                           excludeIds={drug2 ? [drug2.id] : []}
                         />
                       </div>
                     )}
                   </div>
 
-                  <div>
-                    <Label>Drug 2 *</Label>
+                  <div className="space-y-2">
+                    <Label className="text-base">Thuốc thứ hai *</Label>
                     {drug2 ? (
-                      <div className="mt-2 flex items-center justify-between rounded-lg border p-3">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="mt-2 flex items-center justify-between rounded-lg border-2 border-primary/20 bg-primary/5 p-4 shadow-sm"
+                      >
                         <div>
-                          <p className="font-medium">{drug2.activeIngredient}</p>
-                          <p className="text-sm text-muted-foreground">{drug2.brandName}</p>
+                          <p className="font-bold text-primary">{drug2.name}</p>
+                          <p className="text-sm text-muted-foreground font-mono">Mã: {drug2.code}</p>
                         </div>
                         <Button
                           type="button"
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           onClick={() => setDrug2(null)}
+                          className="hover:bg-red-100 hover:text-red-500"
                         >
                           <X className="h-4 w-4" />
                         </Button>
-                      </div>
+                      </motion.div>
                     ) : (
                       <div className="mt-2">
                         <DrugSearchInput
                           onSelect={setDrug2}
-                          placeholder="Search for second drug..."
+                          placeholder="Tìm kiếm thuốc thứ hai..."
                           excludeIds={drug1 ? [drug1.id] : []}
                         />
                       </div>
@@ -130,156 +150,168 @@ export function ManageInteractionsPage() {
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="severity">Severity *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="severity" className="text-base">Mức độ nghiêm trọng *</Label>
                   <Select value={severity} onValueChange={(value: string) => setSeverity(value as 'Mild' | 'Moderate' | 'Severe')}>
-                    <SelectTrigger id="severity">
+                    <SelectTrigger id="severity" className="h-11">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Mild">Mild</SelectItem>
-                      <SelectItem value="Moderate">Moderate</SelectItem>
-                      <SelectItem value="Severe">Severe</SelectItem>
+                      <SelectItem value="Mild">Nhẹ (Mild)</SelectItem>
+                      <SelectItem value="Moderate">Trung bình (Moderate)</SelectItem>
+                      <SelectItem value="Severe">Nghiêm trọng (Severe)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div>
-                  <Label htmlFor="mechanism">Mechanism *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="mechanism" className="text-base">Cơ chế tương tác *</Label>
                   <Textarea
                     id="mechanism"
                     required
                     value={mechanism}
                     onChange={(e) => setMechanism(e.target.value)}
-                    placeholder="Describe the mechanism of the interaction..."
+                    placeholder="Mô tả cơ chế của tương tác thuốc..."
                     rows={3}
+                    className="resize-none focus:ring-primary"
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="clinicalEffects">Clinical Effects *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="clinicalEffects" className="text-base">Hậu quả lâm sàng *</Label>
                   <Textarea
                     id="clinicalEffects"
                     required
                     value={clinicalEffects}
                     onChange={(e) => setClinicalEffects(e.target.value)}
-                    placeholder="Describe the clinical effects of the interaction..."
+                    placeholder="Mô tả các biểu hiện hoặc hậu quả lâm sàng..."
                     rows={3}
+                    className="resize-none focus:ring-primary"
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="managementRecommendations">Management Recommendations *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="managementRecommendations" className="text-base">Khuyến cáo quản lý *</Label>
                   <Textarea
                     id="managementRecommendations"
                     required
                     value={managementRecommendations}
                     onChange={(e) => setManagementRecommendations(e.target.value)}
-                    placeholder="Provide management recommendations..."
+                    placeholder="Đưa ra các hướng dẫn xử trí, quản lý..."
                     rows={3}
+                    className="resize-none focus:ring-primary"
                   />
                 </div>
 
-                <Button type="submit" disabled={!canSubmit || createMutation.isPending} className="w-full">
+                <Button type="submit" disabled={!canSubmit || createMutation.isPending} className="w-full h-12 text-lg">
                   {createMutation.isPending ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating...
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Đang tạo...
                     </>
                   ) : (
                     <>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create Interaction
+                      <Plus className="mr-2 h-5 w-5" />
+                      Tạo tương tác
                     </>
                   )}
                 </Button>
-
-                {createMutation.isSuccess && (
-                  <Alert>
-                    <CheckCircle className="h-4 w-4" />
-                    <AlertDescription>Interaction created successfully!</AlertDescription>
-                  </Alert>
-                )}
-
-                {createMutation.isError && (
-                  <Alert variant="destructive">
-                    <AlertDescription>
-                      Failed to create interaction. Please try again.
-                    </AlertDescription>
-                  </Alert>
-                )}
               </form>
             </CardContent>
           </Card>
         </div>
 
-        <div>
-          <Card>
+        <div className="space-y-6">
+          <Card className="sticky top-24">
             <CardHeader>
-              <CardTitle>Preview</CardTitle>
+              <CardTitle className="text-lg">Xem trước</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               {drug1 && drug2 ? (
-                <>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-6"
+                >
                   <div>
-                    <p className="mb-2 text-sm font-medium">Interaction Between:</p>
-                    <div className="space-y-2 rounded-lg border p-3">
-                      <p className="font-medium">{drug1.activeIngredient}</p>
-                      <p className="text-center text-muted-foreground">↔</p>
-                      <p className="font-medium">{drug2.activeIngredient}</p>
+                    <p className="mb-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">Tương tác giữa:</p>
+                    <div className="space-y-3 rounded-xl border bg-muted/30 p-4 text-center">
+                      <p className="font-bold text-lg">{drug1.name}</p>
+                      <div className="flex items-center justify-center">
+                        <div className="h-px flex-1 bg-border" />
+                        <span className="px-3 text-2xl text-primary font-bold">↔</span>
+                        <div className="h-px flex-1 bg-border" />
+                      </div>
+                      <p className="font-bold text-lg">{drug2.name}</p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="mb-2 text-sm font-medium">Severity:</p>
+                    <p className="mb-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">Mức độ:</p>
                     <SeverityBadge severity={severity} />
                   </div>
 
                   {mechanism && (
-                    <div>
-                      <p className="mb-1 text-sm font-medium">Mechanism:</p>
-                      <p className="text-sm text-muted-foreground">{mechanism}</p>
-                    </div>
+                    <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}>
+                      <p className="mb-1 text-sm font-semibold text-muted-foreground uppercase tracking-wider">Cơ chế:</p>
+                      <p className="text-sm leading-relaxed">{mechanism}</p>
+                    </motion.div>
                   )}
 
                   {clinicalEffects && (
-                    <div>
-                      <p className="mb-1 text-sm font-medium">Clinical Effects:</p>
-                      <p className="text-sm text-muted-foreground">{clinicalEffects}</p>
-                    </div>
+                    <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                      <p className="mb-1 text-sm font-semibold text-muted-foreground uppercase tracking-wider">Hậu quả:</p>
+                      <p className="text-sm leading-relaxed">{clinicalEffects}</p>
+                    </motion.div>
                   )}
 
                   {managementRecommendations && (
-                    <div>
-                      <p className="mb-1 text-sm font-medium">Management:</p>
-                      <p className="text-sm text-muted-foreground">
-                        {managementRecommendations}
-                      </p>
-                    </div>
+                    <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                      <p className="mb-1 text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quản lý:</p>
+                      <p className="text-sm leading-relaxed">{managementRecommendations}</p>
+                    </motion.div>
                   )}
-                </>
+                </motion.div>
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  Select two drugs to see preview
-                </p>
+                <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
+                    <Search className="h-8 w-8 opacity-20" />
+                  </div>
+                  <p className="text-sm">Chọn hai loại thuốc để xem trước thông tin tương tác</p>
+                </div>
               )}
             </CardContent>
           </Card>
 
-          <Card className="mt-6">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-base">Guidelines</CardTitle>
+              <CardTitle className="text-base">Hướng dẫn</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm text-muted-foreground">
-              <p>• Select two different drugs</p>
-              <p>• Choose appropriate severity level</p>
-              <p>• Provide detailed mechanism</p>
-              <p>• Describe clinical manifestations</p>
-              <p>• Include management strategies</p>
+            <CardContent className="space-y-3 text-sm text-muted-foreground">
+              <div className="flex gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                <p>Chọn hai tên thuốc (biệt dược hoặc hoạt chất) khác nhau.</p>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                <p>Chọn mức độ nghiêm trọng phù hợp dựa trên tài liệu tham khảo.</p>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                <p>Mô tả chi tiết cơ chế dược học nếu có.</p>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                <p>Nêu rõ các triệu chứng lâm sàng cần theo dõi.</p>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                <p>Cung cấp các chiến lược xử trí (thay thế, điều chỉnh liều, giãn cách thời gian).</p>
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

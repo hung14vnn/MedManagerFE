@@ -91,9 +91,9 @@ export function DrugSearchInput({ onSelect, placeholder = 'Tìm kiếm thuốc..
                     onClick={() => handleSelect(drug)}
                     className="w-full rounded-sm p-2 text-left text-sm hover:bg-muted cursor-pointer"
                   >
-                    <div className="font-medium">{drug.activeIngredient}</div>
+                    <div className="font-medium">{drug.name}</div>
                     <div className="text-xs text-muted-foreground">
-                      {drug.brandName} {drug.pharmacologicalGroup && `• ${drug.pharmacologicalGroup}`}
+                      Mã: {drug.code} {drug.status && `• ${drug.status}`}
                     </div>
                   </motion.button>
                 ))}

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { DrugSearchInput } from '@/components/DrugSearchInput';
 import { SeverityBadge } from '@/components/SeverityBadge';
+import { Badge } from '@/components/ui/badge';
 import { X, Plus, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 
 export function InteractionCheckerPage() {
@@ -40,19 +41,19 @@ export function InteractionCheckerPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-4 md:py-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-4 md:mb-8"
       >
-        <h1 className="mb-2 text-3xl font-bold">Kiểm tra tương tác thuốc</h1>
-        <p className="text-muted-foreground">
+        <h1 className="mb-2 text-2xl md:text-3xl font-bold text-green-900">Kiểm tra tương tác thuốc</h1>
+        <p className="text-sm md:text-base text-muted-foreground">
           Thêm nhiều loại thuốc để kiểm tra tương tác tiềm ẩn
         </p>
       </motion.div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 md:gap-6 lg:grid-cols-3">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -60,9 +61,9 @@ export function InteractionCheckerPage() {
           className="lg:col-span-1"
         >
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                <Plus className="h-4 w-4 md:h-5 md:w-5" />
                 Thêm thuốc
               </CardTitle>
             </CardHeader>
@@ -74,7 +75,7 @@ export function InteractionCheckerPage() {
               />
 
               <div className="space-y-2">
-                <p className="text-sm font-medium">
+                <p className="text-xs md:text-sm font-medium">
                   Thuốc đã chọn ({selectedDrugs.length})
                 </p>
                 {selectedDrugs.length > 0 ? (
@@ -87,16 +88,17 @@ export function InteractionCheckerPage() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20 }}
                           transition={{ delay: index * 0.05 }}
-                          className="flex items-center justify-between rounded-lg border p-2"
+                          className="flex items-center justify-between rounded-lg border p-2 md:p-3"
                         >
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">{drug.activeIngredient}</p>
-                            <p className="text-xs text-muted-foreground">{drug.brandName}</p>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs md:text-sm font-medium truncate">{drug.name}</p>
+                            <p className="text-xs text-muted-foreground">Mã: {drug.code}</p>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleRemoveDrug(drug.id)}
+                            className="shrink-0"
                           >
                             <X className="h-4 w-4" />
                           </Button>
@@ -105,14 +107,14 @@ export function InteractionCheckerPage() {
                     </AnimatePresence>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Chưa chọn thuốc nào</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">Chưa chọn thuốc nào</p>
                 )}
               </div>
 
               <Button
                 onClick={handleCheckInteractions}
                 disabled={selectedDrugs.length < 2 || checkMutation.isPending}
-                className="w-full"
+                className="w-full h-11"
               >
                 {checkMutation.isPending ? (
                   <>
@@ -120,12 +122,12 @@ export function InteractionCheckerPage() {
                     Đang kiểm tra...
                   </>
                 ) : (
-                  <Button className='cursor-pointer'>Kiểm tra</Button>
+                  'Kiểm tra tương tác'
                 )}
               </Button>
 
               {selectedDrugs.length < 2 && (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground text-center">
                   Thêm ít nhất 2 loại thuốc để kiểm tra tương tác
                 </p>
               )}
@@ -184,41 +186,63 @@ export function InteractionCheckerPage() {
                     transition={{ delay: index * 0.1 }}
                   >
                     <Card>
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <CardTitle className="text-lg">
-                            {interaction.drug1.activeIngredient} ↔{' '}
-                            {interaction.drug2.activeIngredient}
+                      <CardHeader className="pb-3">
+                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
+                          <CardTitle className="text-base md:text-lg">
+                            {interaction.drug1.name} ↔{' '}
+                            {interaction.drug2.name}
                           </CardTitle>
-                          <SeverityBadge severity={interaction.severity} />
+                          <SeverityBadge severity={interaction.severity} className="self-start" />
                         </div>
                       </CardHeader>
-                      <CardContent className="space-y-4">
+                      <CardContent className="space-y-3 md:space-y-4">
                         <div>
-                          <h4 className="mb-1 font-semibold">Cơ chế</h4>
-                          <p className="text-sm text-muted-foreground">{interaction.mechanism}</p>
+                          <h4 className="mb-1 text-sm md:text-base font-semibold">Cơ chế</h4>
+                          <p className="text-xs md:text-sm text-muted-foreground">{interaction.mechanism}</p>
                         </div>
 
                         <div>
-                          <h4 className="mb-1 font-semibold">Hiệu quả lâm sàng</h4>
-                          <p className="text-sm text-muted-foreground">
+                          <h4 className="mb-1 text-sm md:text-base font-semibold">Hiệu quả lâm sàng</h4>
+                          <p className="text-xs md:text-sm text-muted-foreground">
                             {interaction.clinicalEffects}
                           </p>
                         </div>
 
                         <div>
-                          <h4 className="mb-1 font-semibold">Khuyến nghị xử lý</h4>
-                          <p className="text-sm text-muted-foreground">
+                          <h4 className="mb-1 text-sm md:text-base font-semibold">Khuyến nghị xử lý</h4>
+                          <p className="text-xs md:text-sm text-muted-foreground">
                             {interaction.managementRecommendations}
                           </p>
                         </div>
 
+                        {interaction.interactionMechanisms && interaction.interactionMechanisms.length > 0 && (
+                          <div>
+                            <h4 className="mb-2 text-sm font-semibold">Cơ chế chi tiết</h4>
+                            <div className="space-y-2">
+                              {interaction.interactionMechanisms.map((im, i) => (
+                                <div key={i} className="rounded-md border bg-muted/30 p-2">
+                                  <div className="mb-1 flex items-center justify-between gap-2">
+                                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground truncate">
+                                      {im.mechanismType}
+                                    </span>
+                                    <Badge variant="outline" className="text-[10px] h-4 shrink-0">
+                                      {im.mechanism.code}
+                                    </Badge>
+                                  </div>
+                                  <p className="text-xs font-medium">{im.mechanism.name}</p>
+                                  <p className="mt-1 text-xs text-muted-foreground">{im.interactionText}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                         {interaction.references.length > 0 && (
                           <div>
-                            <h4 className="mb-2 font-semibold">Tham khảo</h4>
+                            <h4 className="mb-2 text-sm md:text-base font-semibold">Tham khảo</h4>
                             <div className="space-y-2">
                               {interaction.references.map((ref) => (
-                                <div key={ref.id} className="rounded border p-2 text-sm">
+                                <div key={ref.id} className="rounded border p-2 text-xs md:text-sm">
                                   <p className="font-medium">{ref.title}</p>
                                   {ref.authors && (
                                     <p className="text-xs text-muted-foreground">{ref.authors}</p>
@@ -246,9 +270,9 @@ export function InteractionCheckerPage() {
             </motion.div>
           ) : (
             <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                <AlertTriangle className="mb-4 h-12 w-12 text-muted-foreground" />
-                <p className="text-muted-foreground">
+              <CardContent className="flex flex-col items-center justify-center py-8 md:py-12 text-center">
+                <AlertTriangle className="mb-4 h-10 w-10 md:h-12 md:w-12 text-muted-foreground" />
+                <p className="text-sm md:text-base text-muted-foreground px-4">
                   Thêm thuốc và nhấp "Kiểm tra tương tác" để xem tương tác thuốc có thể xảy ra
                 </p>
               </CardContent>
